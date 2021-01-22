@@ -1,13 +1,12 @@
 # -*- encoding: utf-8 -*-
 
-from __future__ import print_function
-
 import datetime
 import delorean
 import os
 import sys
 import json
 import logging
+from functools import lru_cache
 
 import requests
 import time
@@ -54,10 +53,12 @@ class RegistryMock(object):
 
 
 def get_data_from_cf(url):
+    print(f'get_data_from_cf({url})')
     r = HTTP_SESSION.get(url, headers=HEADERS)
     return json.loads(r.content.decode('UTF-8'))
 
 
+@lru_cache
 def get_zone_id():
     r = get_data_from_cf(url='%szones?name=%s' % (ENDPOINT, ZONE))
     return r['result'][0]['id']
